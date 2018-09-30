@@ -1,0 +1,17 @@
+[debug] [2018-09-30T17:16:32.665Z] ----------------------------------------------------------------------
+[debug] [2018-09-30T17:16:32.669Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\prateek.vaibhav\AppData\Roaming\npm\node_modules\firebase-tools\bin\firebase deploy
+[debug] [2018-09-30T17:16:32.669Z] CLI Version:   4.2.1
+[debug] [2018-09-30T17:16:32.669Z] Platform:      win32
+[debug] [2018-09-30T17:16:32.669Z] Node Version:  v8.11.4
+[debug] [2018-09-30T17:16:32.669Z] Time:          Sun Sep 30 2018 22:46:32 GMT+0530 (India Standard Time)
+[debug] [2018-09-30T17:16:32.669Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-09-30T17:16:32.725Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-09-30T17:16:32.725Z] > authorizing via signed-in user
+[debug] [2018-09-30T17:16:32.729Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-09-30T17:16:32.729Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+
+[debug] [2018-09-30T17:16:33.541Z] <<< HTTP RESPONSE 200
+[debug] [2018-09-30T17:16:33.649Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/laconically-1b118  
+ 
+[debug] [2018-09-30T17:16:36.485Z] <<< HTTP RESPONSE 200

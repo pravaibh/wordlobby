@@ -1,3 +1,4 @@
 #Ignore node modules
 /functions/node_modules
 /functions/serviceAccountKey.json
+/appengine/lib

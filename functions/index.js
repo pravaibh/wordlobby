@@ -6,6 +6,7 @@ const wordsAPIUrl = 'https://wordsapiv1.p.mashape.com/words/';
 const unirest = require('unirest');
 const gmat_file = './functions/word-seed/gmat-words.ini';
 const gre_file = './functions/word-seed/gre-words.ini';
+const lite_file = './functions/word-seed/lite-words.ini';
 const toefl_file = './functions/word-seed/toefl-words.ini';
 const cat_file = './functions/word-seed/cat-words.ini';
 
@@ -16,13 +17,60 @@ admin.initializeApp({
 
 
 var db = admin.firestore();
-addToDb(gre_file,'gre_wordlist');
+function updateDailyWordAndSendNotifications() {
+    let indexRef = db.collection('lite-words').doc('active-word-index');
+    indexRef.get().then((val) => {
+        console.log(val.data().index);
+        let ind = val.data().index;
+        console.log(ind);
+        db.collection('lite-words').doc(String(ind)).get().then((value) => {
+            console.log(value.data());
+            console.log(ind);
+            db.collection('lite_wordlist').doc(String(ind)).set(value.data());
+            sendNotification(value.data().word, value.data().meaning[0]);
+            return 1;
+        }).catch(err => console.log(err));
+        indexRef.update({ index: ind - 1 });
+        return 1;
+    }).catch((err) => console.log(err));
+}
+
+function sendNotification(word, meaning) {
+    // The topic name can be optionally prefixed with "/topics/".
+    var topic = 'word_of_day';
+
+    // See documentation on defining a message payload.
+    var message = {
+        android: {
+            ttl: 3600 * 1000, // 1 hour in milliseconds
+            priority: 'normal',
+            notification: {
+                title: 'Your word for today is '.concat(word),
+                body: meaning,
+                icon: 'stock_ticker_update',
+                color: '#f45342'
+            }
+        },
+        topic: topic
+    };
+
+    // Send a message to devices subscribed to the provided topic.
+    admin.messaging().send(message)
+        .then((response) => {
+            // Response is a message ID string.
+            console.log('Successfully sent message:', response);
+            return 1;
+        })
+        .catch((error) => {
+            console.log('Error sending message:', error);
+        });
+}
 
 exports.addGMATData = fieryFunctions.https.onRequest((request, response) => {
     addToDb();
 });
 
-function addToDb(file,collection) {
+function addToDb(file, collection) {
 
 
     var properties = PropertiesReader(file);
@@ -57,7 +105,7 @@ function addToDb(file,collection) {
                 console.log(result.status, result.body.results[0].definition);
                 var docRef = db.collection(collection).doc(String(id));
                 let examples = ['No examples available'];
-                if (result.status, result.body.results[0].examples != null) {
+                if (result.status, result.body.results[0].examples !== null) {
                     examples = result.body.results[0].examples;
                 }
                 var setAda = docRef.set({
@@ -71,3 +119,7 @@ function addToDb(file,collection) {
     }
 }
 
+exports.daily_job =
+    fieryFunctions.pubsub.topic('daily-tick').onPublish((event) => {
+        updateDailyWordAndSendNotifications();
+    });
